@@ -69,12 +69,6 @@ void update(int (*world)[SIM_X_SIZE], int (*new_world)[SIM_X_SIZE]) {
 void app() {
   int world[SIM_Y_SIZE][SIM_X_SIZE];
   int new_world[SIM_Y_SIZE][SIM_X_SIZE];
-  for (int y = 0; y < SIM_Y_SIZE; ++y) {
-    for (int x = 0; x < SIM_X_SIZE; ++x) {
-      world[y][x] = 0;
-      new_world[y][x] = 0;
-    }
-  }
   init_game(world, new_world);
   while (true) {
     draw(world, new_world);
