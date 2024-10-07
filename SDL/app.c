@@ -70,7 +70,7 @@ void app() {
   int world[SIM_Y_SIZE][SIM_X_SIZE];
   int new_world[SIM_Y_SIZE][SIM_X_SIZE];
   init_game(world, new_world);
-  while (true) {
+  while (1) {
     draw(world, new_world);
     update(world, new_world);
   }
