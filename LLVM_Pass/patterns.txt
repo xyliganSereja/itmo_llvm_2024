@@ -1,0 +1,10 @@
+Pattern: ('br',), Count: 146
+Pattern: ('store',), Count: 108
+Pattern: ('call',), Count: 86
+Pattern: ('load <- call',), Count: 64
+Pattern: ('icmp <- br',), Count: 48
+Pattern: ('store', 'br'), Count: 48
+Pattern: ('icmp <- br', 'br'), Count: 48
+Pattern: ('load <- icmp',), Count: 46
+Pattern: ('load <- icmp', 'icmp <- br'), Count: 44
+Pattern: ('load <- icmp', 'icmp <- br', 'br'), Count: 44
