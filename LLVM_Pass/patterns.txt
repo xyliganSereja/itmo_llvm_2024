@@ -1,10 +1,10 @@
-Pattern: ('br',), Count: 59
-Pattern: ('store',), Count: 48
-Pattern: ('call',), Count: 27
-Pattern: ('store', 'br'), Count: 24
-Pattern: ('load <- sext',), Count: 20
-Pattern: ('sext <- getelementptr',), Count: 20
-Pattern: ('load <- sext', 'sext <- getelementptr'), Count: 20
-Pattern: ('load <- call',), Count: 19
-Pattern: ('load <- icmp',), Count: 17
-Pattern: ('icmp <- br',), Count: 16
+Pattern: ('getelementptr <- phi',), Count: 222
+Pattern: ('srem <- call',), Count: 111
+Pattern: ('getelementptr <- alloca',), Count: 111
+Pattern: ('store <- srem',), Count: 111
+Pattern: ('store <- getelementptr',), Count: 111
+Pattern: ('add <- phi',), Count: 111
+Pattern: ('icmp <- add',), Count: 111
+Pattern: ('srem <- call', 'getelementptr <- alloca'), Count: 111
+Pattern: ('getelementptr <- alloca', 'getelementptr <- phi'), Count: 111
+Pattern: ('getelementptr <- phi', 'getelementptr <- phi'), Count: 111
