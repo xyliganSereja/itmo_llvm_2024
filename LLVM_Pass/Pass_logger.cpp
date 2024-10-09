@@ -15,7 +15,7 @@ struct MyModPass : public PassInfoMixin<MyModPass> {
         if (F.isDeclaration() || M.getSourceFileName() != "../SDL/app.c") continue;
         for (auto&& B : F) {
           for (auto&& I : B) {
-            if (dyn_cast<PHINode>(&I)) continue;
+            if (isa<PHINode>(I)) continue;
             builder.SetInsertPoint(&I);
             for (auto&& O : I.operands()) {
               if (auto *op = dyn_cast<Instruction>(O)) {
