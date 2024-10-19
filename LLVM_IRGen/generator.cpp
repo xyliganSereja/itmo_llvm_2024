@@ -9,12 +9,9 @@
 
 using namespace llvm;
 
-constexpr std::string RUN = "run";
-constexpr std::string PRINT = "print";
-
 int main(int argc, char* argv[]) {
-  if (argc != 2 || argv[1] != PRINT && argv[1] != RUN) {
-    outs() << "either \"print\" or \"run\" expected\n";
+  if (argc < 2) {
+    outs() << "expected at least two arguments\n";
     return 1;
   }
   
