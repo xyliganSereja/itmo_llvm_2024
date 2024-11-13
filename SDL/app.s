@@ -1,89 +1,84 @@
 app:
-    # Инициализация двух массивов размером 256x512
-    ALLOC R1, 256*512  # Создание массива 1
-    ALLOC R2, 256*512  # Создание массива 2
+    ALLOC R1, 256*512
+    ALLOC R2, 256*512
 
-    CALL init_game, R1  # Вызов функции инициализации
-    CALL draw, R1       # Вызов функции отрисовки
-    CALL update, R1, R2 # Вызов функции обновления состояния
+    CALL init_game, R1
+    CALL draw, R1
+    CALL update, R1, R2
 app_loop:
-    # Бесконечный цикл обновления
-    CALL draw, R1       # Вызов функции отрисовки
-    CALL update, R1, R2 # Вызов функции обновления состояния
-    JMP app_loop         # Возврат в начало цикла
+    CALL draw, R1
+    CALL update, R1, R2
+    JMP app_loop
 
 init_game:
-    MOV R3, 0                # Начальная инициализация R3 = 0
+    MOV R3, 0
 init_loop:
-    CMP R4, R3, 256       # Проверка условия выхода (R3 == 256)
-    JMPEQ R4, 1, init_end    # Если R4 == 1, переход к init_end
-    CALL SIM_RAND            # Вызов simRand(), результат в R5
-    MOD R6, R5, 2            # Остаток от деления на 2, результат в R6 (0 или 1)
-    STORE R6, [R1, R3]       # Сохранение R6 в массиве по адресу R1 + R3
-    ADD R3, R3, 1            # Инкремент R3
-    JMP init_loop             # Переход в начало цикла
+    CMP R4, R3, 256
+    JMPEQ R4, 1, init_end
+    CALL SIM_RAND
+    MOD R6, R5, 2
+    STORE R6, [R1, R3]
+    ADD R3, R3, 1
+    JMP init_loop
 init_end:
-    RET                      # Возврат из функции
-
+    RET
 
 draw:
-    MOV R3, 0                # Начальная инициализация R3 = 0
+    MOV R3, 0
 draw_loop:
-    CMP R4, R3, 256       # Проверка условия выхода (R3 == 256)
-    JMPEQ R4, 1, draw_end    # Если R4 == 1, переход к draw_end
-    CALL SIM_FLUSH           # Вызов simFlush
-    LOAD R5, [R1, R3]        # Загрузка значения пикселя в R5
-    CMP R6, R5, 0         # Проверка, является ли пиксель пустым (0)
-    SELECT R7, R6, -16777216, -16711936  # Установка цвета в зависимости от условия
-    CALL SIM_PUTPIXEL R3, R3, R7         # Отображение пикселя
-    ADD R3, R3, 1                        # Инкремент R3
+    CMP R4, R3, 256
+    JMPEQ R4, 1, draw_end
+    CALL SIM_FLUSH
+    LOAD R5, [R1, R3]
+    CMP R6, R5, 0
+    SELECT R7, R6, -16777216, -16711936
+    CALL SIM_PUTPIXEL R3, R3, R7
+    ADD R3, R3, 1
 draw_end:
-    RET                                  # Возврат из функции
-
+    RET
 
 count_neighbors:
-    MOV R4, -1              # Начальное смещение по X
-    MOV R5, -1              # Начальное смещение по Y
-    MOV R6, 0               # Начальный счетчик соседей
+    MOV R4, -1
+    MOV R5, -1
+    MOV R6, 0
 
 count_x_loop:
-    ADD R4, R4, 1           # Инкремент смещения по X
-    CMP R7, R4, 2        # Если R4 == 2, перейти на следующий цикл Y
+    ADD R4, R4, 1
+    CMP R7, R4, 2
     JMPEQ R7, 1, count_y_loop
 
 count_y_loop:
-    ADD R5, R5, 1           # Инкремент смещения по Y
-    CMP R8, R5, 2        # Если R5 == 2, выйти из цикла
+    ADD R5, R5, 1
+    CMP R8, R5, 2
     JMPEQ R8, 1, count_exit
-    ADD R9, R4, R0          # X + смещение
-    ADD R10, R5, R1         # Y + смещение
-    CMPG R11, R9, 0       # Проверка границ (0 <= X < 256)
+    ADD R9, R4, R0
+    ADD R10, R5, R1
+    CMPG R11, R9, 0
     CMPL R12, R9, 256
-    AND R13, R11, R12       # R13 = R11 AND R12
-    CMPG R14, R10, 0      # Проверка границ (0 <= Y < 512)
+    AND R13, R11, R12
+    CMPG R14, R10, 0
     CMP_LT R15, R10, 512
-    AND R16, R14, R15       # R16 = R14 AND R15
-    AND R17, R13, R16       # Все границы должны соблюдаться
-    LOAD R18, [R2, R9, R10] # Загрузка значения соседа
-    ADD R6, R6, R18         # Увеличение счетчика на значение соседа
-    JMP count_y_loop         # Переход к следующему Y
+    AND R16, R14, R15
+    AND R17, R13, R16
+    LOAD R18, [R2, R9, R10]
+    ADD R6, R6, R18
+    JMP count_y_loop
 count_exit:
     RET
 
-
 update:
-    MOV R3, 0                 # Начальная инициализация R3 = 0
+    MOV R3, 0
 update_loop:
-    CMP R4, R3, 256        # Проверка условия выхода (R3 == 256)
-    JMPEQ R4, 1, update_end   # Если R4 == 1, переход к update_end
-    CALL count_neighbors R3, R4, R1 # Вызов count_neighbors, результат в R5
-    LOAD R6, [R1, R3]         # Загрузка значения ячейки
-    CMPN R7, R6, 0          # Проверка, не равен ли пиксель нулю
-    AND R8, R5, -2            # Устанавливаем бит на основании R5
-    CMP R9, R8, 2          # Проверка условия
-    SELECT R10, R7, R9, 0     # Если пиксель не ноль, сохраняем
-    STORE R10, [R2, R3]       # Сохранение в массив
-    ADD R3, R3, 1             # Инкремент R3
-    JMP update_loop            # Переход в начало цикла
+    CMP R4, R3, 256
+    JMPEQ R4, 1, update_end
+    CALL count_neighbors R3, R4, R1
+    LOAD R6, [R1, R3]
+    CMPN R7, R6, 0
+    AND R8, R5, -2
+    CMP R9, R8, 2
+    SELECT R10, R7, R9, 0
+    STORE R10, [R2, R3]
+    ADD R3, R3, 1
+    JMP update_loop
 update_end:
-    RET                       # Возврат из функции
+    RET
